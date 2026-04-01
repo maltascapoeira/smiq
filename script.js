@@ -1,7 +1,9 @@
 // ─── CONFIGURATION ──────────────────────────────────────────────────────────
-const SUPABASE_URL      = 'https://YOUR_PROJECT.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE';
+const SUPABASE_URL      = 'https://ikhimltwdbneiojmcilu.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_kvCGMl0iYUv43dJb1M7rug_o3yU1sFB';
 const TABLE             = 'smiq_responses';
+// RLS FIX: In Supabase → Authentication → Policies → smiq_responses
+// Add policy: Operation=INSERT, Target roles=anon, USING=true, WITH CHECK=true
 // ────────────────────────────────────────────────────────────────────────────
 
 const SEGMENTS = {
@@ -231,19 +233,12 @@ function showSuccess() {
   const seg = SEGMENTS[state.segment];
   $('success-heading').textContent = `Axe, ${state.name}!`;
   $('success-badge').innerHTML     = `<span>${seg.icon}</span><span>${seg.label}</span>`;
-  $('success-email').textContent   = `Confirmation sent to ${state.email}`;
-
-  if (isLapsed()) {
-    $('success-msg').textContent = "Thank you for sharing your story. Understanding why people step away is just as important as understanding why they stay. We'll be in touch with something worth coming back for.";
-  }
+  $('success-msg').textContent     = isLapsed()
+    ? "Thank you for sharing your story. Understanding why people step away matters deeply — your answer will be read carefully."
+    : "Thank you for sharing. We read every response personally and your answer will help shape something genuinely useful for the Capoeira community.";
 
   $('success-screen').style.display = 'block';
 }
-
-// ─── MISC ────────────────────────────────────────────────────────────────────
-$('dismiss-banner').addEventListener('click', () => {
-  $('setup-banner').style.display = 'none';
-});
 
 // Initial render
 renderStep(0);

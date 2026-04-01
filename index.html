@@ -11,17 +11,6 @@
 </head>
 <body>
 
-<!-- Setup Banner -->
-<div id="setup-banner">
-  <button id="dismiss-banner">✕ Dismiss</button>
-  <strong>⚙ Setup Required:</strong>
-  Edit the <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> in the script below.
-  Create a Supabase table named <code>smiq_responses</code> with columns:
-  <code>id</code> (int8, PK), <code>created_at</code> (timestamptz), <code>name</code>, <code>email</code>,
-  <code>segment</code>, <code>segment_label</code>, <code>smiq_answer</code>, <code>teaching_role</code>,
-  <code>graduation_level</code> (all text).
-</div>
-
 <div class="wrapper">
   <div class="card" id="main-card">
 
@@ -144,8 +133,8 @@
     <!-- ── STEP 3 ── Email capture -->
     <div class="step" id="step-3">
       <span class="eyebrow">Almost there</span>
-      <h1>Where should we send your resources?</h1>
-      <p class="subtitle">We'll only ever send you things worth reading.</p>
+      <h1>Last step — who are you?</h1>
+      <p class="subtitle">So we know whose voice this is.</p>
       <hr class="rule">
 
       <div class="input-group">
@@ -160,7 +149,7 @@
       <div class="btn-row">
         <button class="btn btn-ghost" id="back-from-email">← Back</button>
         <button class="btn btn-primary" id="submit-btn" disabled>
-          <span class="btn-text">Send my resources →</span>
+          <span class="btn-text">Submit →</span>
           <span class="spinner"></span>
         </button>
       </div>
@@ -170,12 +159,8 @@
     <!-- ── SUCCESS ── -->
     <div id="success-screen">
       <div class="axe-heading" id="success-heading"></div>
-      <p class="success-msg" id="success-msg">
-        Thank you for sharing. We're reading every response carefully — your insights help shape what we create next.
-        Check your inbox for tailored resources matched to your journey.
-      </p>
+      <p class="success-msg" id="success-msg"></p>
       <div class="segment-badge" id="success-badge"></div>
-      <p class="email-confirm" id="success-email"></p>
     </div>
 
   </div>
