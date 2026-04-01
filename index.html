@@ -3,169 +3,672 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Capoeira — Tell Us Where You Are</title>
+<title>Capoeira International — Your Voice Shapes What's Next</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:         #0e0c09;
+    --surface:    #15120d;
+    --border:     #2a2318;
+    --gold:       #c8922a;
+    --gold-light: #e8b84b;
+    --gold-muted: #6b4d1a;
+    --gold-dim:   rgba(200,146,42,0.08);
+    --text:       #e8dfd0;
+    --text-muted: #8a7a65;
+    --text-dim:   #4a3f30;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 19px;
+    line-height: 1.65;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Grain overlay ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  /* ── Atmospheric glow ── */
+  .glow-top {
+    position: fixed;
+    top: -30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120vw;
+    height: 70vh;
+    background: radial-gradient(ellipse, rgba(200,146,42,0.07) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .glow-bottom {
+    position: fixed;
+    bottom: -20%;
+    left: 30%;
+    width: 80vw;
+    height: 50vh;
+    background: radial-gradient(ellipse, rgba(200,146,42,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Layout ── */
+  .page { position: relative; z-index: 1; }
+
+  /* ── Nav ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 18px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(to bottom, rgba(14,12,9,0.95), transparent);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: var(--gold);
+    letter-spacing: 0.04em;
+    text-decoration: none;
+  }
+  .nav-logo span {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 0.85rem;
+    margin-left: 8px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .nav-cta {
+    font-family: 'Crimson Pro', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gold);
+    text-decoration: none;
+    border: 1px solid var(--gold-muted);
+    padding: 7px 18px;
+    border-radius: 3px;
+    transition: all 0.2s;
+    letter-spacing: 0.04em;
+  }
+  .nav-cta:hover {
+    background: var(--gold-dim);
+    border-color: var(--gold);
+  }
+
+  /* ── Hero ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    position: relative;
+  }
+
+  .hero-eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero-eyebrow::before,
+  .hero-eyebrow::after {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: var(--gold-muted);
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(2.8rem, 8vw, 5.5rem);
+    line-height: 1.08;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    max-width: 820px;
+    margin-bottom: 12px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-sub {
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    color: var(--text-muted);
+    font-style: italic;
+    max-width: 540px;
+    margin: 0 auto 48px;
+    line-height: 1.55;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--gold), #9a6818);
+    color: #0e0c09;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 16px 40px;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    border: none;
+    cursor: pointer;
+  }
+  .hero-cta:hover {
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(200,146,42,0.3);
+  }
+  .hero-cta .arrow {
+    transition: transform 0.2s;
+  }
+  .hero-cta:hover .arrow { transform: translateX(4px); }
+
+  .hero-note {
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  /* Scroll indicator */
+  .scroll-hint {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-dim);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    animation: fadeIn 2s ease 1.5s both;
+  }
+  .scroll-hint::after {
+    content: '';
+    width: 1px;
+    height: 36px;
+    background: linear-gradient(to bottom, var(--gold-muted), transparent);
+    animation: scrollPulse 2s ease infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.8); }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  /* ── Divider ── */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+  }
+
+  /* ── Who We Are ── */
+  .section {
+    padding: 100px 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .section-eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .section h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1.1;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    margin-bottom: 28px;
+    max-width: 700px;
+  }
+  .section h2 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .section p {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--text-muted);
+    max-width: 620px;
+    margin-bottom: 20px;
+    line-height: 1.7;
+  }
+  .section p strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* ── Pillars ── */
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin: 60px 0;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .pillar {
+    background: var(--surface);
+    padding: 32px 28px;
+    position: relative;
+  }
+  .pillar::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--gold-muted), var(--gold));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .pillar:hover::before { opacity: 1; }
+  .pillar-icon {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 14px;
+  }
+  .pillar-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--text);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .pillar-text {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.55;
+    font-style: italic;
+  }
+
+  /* ── Segments section ── */
+  .segments-section {
+    padding: 80px 24px 100px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .segments-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .segments-inner h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.15;
+  }
+  .segments-inner .lead {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: 48px;
+    max-width: 560px;
+    line-height: 1.6;
+  }
+
+  .seg-list {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+  .seg-item {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 22px 16px;
+    text-align: center;
+    transition: all 0.25s;
+  }
+  .seg-item:hover {
+    border-color: var(--gold-muted);
+    background: var(--gold-dim);
+    transform: translateY(-2px);
+  }
+  .seg-item .icon { font-size: 26px; display: block; margin-bottom: 10px; }
+  .seg-item .name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .seg-item .desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-style: italic;
+    line-height: 1.4;
+  }
+
+  /* ── Why section ── */
+  .why-section {
+    padding: 100px 24px;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .why-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 24px;
+    letter-spacing: -0.01em;
+  }
+  .why-section h2 em { font-style: italic; color: var(--gold); }
+  .why-section p {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 18px;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .why-section p strong { color: var(--text); font-weight: 600; }
+
+  .promise-list {
+    list-style: none;
+    margin: 40px auto;
+    max-width: 480px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .promise-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 17px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .promise-list li::before {
+    content: '✦';
+    color: var(--gold);
+    font-size: 12px;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+
+  /* ── Final CTA ── */
+  .final-cta {
+    padding: 100px 24px 120px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;
+    height: 100%;
+    background: radial-gradient(ellipse, rgba(200,146,42,0.06) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .final-cta h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+    position: relative;
+  }
+  .final-cta h2 em { font-style: italic; color: var(--gold); }
+  .final-cta p {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: 44px;
+    position: relative;
+  }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--gold);
+  }
+  .footer-note {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-eyebrow { animation: fadeUp 0.6s ease 0.1s both; }
+  .hero h1      { animation: fadeUp 0.7s ease 0.25s both; }
+  .hero-sub     { animation: fadeUp 0.7s ease 0.4s both; }
+  .hero-cta     { animation: fadeUp 0.7s ease 0.55s both; }
+  .hero-note    { animation: fadeUp 0.7s ease 0.65s both; }
+
+  /* ── Responsive ── */
+  @media (max-width: 860px) {
+    .seg-list { grid-template-columns: repeat(3, 1fr); }
+    .pillars  { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    nav { padding: 16px 20px; }
+    .nav-logo span { display: none; }
+    .seg-list { grid-template-columns: 1fr 1fr; }
+    .hero { padding: 100px 20px 70px; }
+    footer { padding: 24px 20px; flex-direction: column; text-align: center; }
+    .section { padding: 70px 20px; }
+    .segments-section { padding: 60px 20px 80px; }
+    .why-section { padding: 70px 20px; }
+    .final-cta { padding: 70px 20px 90px; }
+  }
+  @media (max-width: 400px) {
+    .seg-list { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
 <body>
 
-<div class="wrapper">
-  <div class="card" id="main-card">
+<div class="glow-top"></div>
+<div class="glow-bottom"></div>
 
-    <!-- Step dots -->
-    <div class="step-dots" id="step-dots">
-      <div class="dot" data-dot="0"></div>
-      <div class="dot" data-dot="1"></div>
-      <div class="dot" data-dot="2" id="teacher-dot"></div>
-      <div class="dot" data-dot="3"></div>
-    </div>
+<div class="page">
 
-    <!-- ── STEP 0 ── Segment picker -->
-    <div class="step" id="step-0">
-      <span class="eyebrow">Tell us where you are</span>
-      <h1>Which of these best describes you?</h1>
-      <p class="subtitle">We'll tailor everything to your journey.</p>
+  <!-- Nav -->
+  <nav>
+    <a href="#" class="nav-logo">Capoeira International <span>Community</span></a>
+    <a href="smiq.html" class="nav-cta">Join the Conversation</a>
+  </nav>
 
-      <div class="segment-grid" id="segment-grid">
-        <button class="segment-card" data-segment="curious" data-label="The Curious One">
-          <span class="seg-icon">🌱</span>
-          <span class="seg-name">The Curious One</span>
-          <span class="seg-desc">New or just exploring — haven't trained regularly yet</span>
-        </button>
-        <button class="segment-card" data-segment="student" data-label="The Student">
-          <span class="seg-icon">🎵</span>
-          <span class="seg-name">The Student</span>
-          <span class="seg-desc">Training consistently, learning the ropes of jogo and music</span>
-        </button>
-        <button class="segment-card" data-segment="practitioner" data-label="The Practitioner">
-          <span class="seg-icon">🌀</span>
-          <span class="seg-name">The Practitioner</span>
-          <span class="seg-desc">Years of training, playing rodas, deepening your art</span>
-        </button>
-        <button class="segment-card" data-segment="teacher" data-label="The Teacher">
-          <span class="seg-icon">🪘</span>
-          <span class="seg-name">The Teacher</span>
-          <span class="seg-desc">Mestre, instructor, or building your own group / school</span>
-        </button>
-        <button class="segment-card segment-card--lapsed" data-segment="lapsed" data-label="The One Who Left">
-          <span class="seg-icon">🌙</span>
-          <span class="seg-name">The One Who Left</span>
-          <span class="seg-desc">Trained before but stepped away — life, injury, or something else pulled you out</span>
-        </button>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-eyebrow">Capoeira International</div>
+    <h1>One art.<br><em>Many journeys.</em><br>One conversation.</h1>
+    <p class="hero-sub">We are building something for every person who has ever stepped into a roda — beginner, mestre, or someone who once trained and walked away. But first, we need to hear from you.</p>
+    <a href="smiq.html" class="hero-cta">
+      Join the Conversation
+      <span class="arrow">→</span>
+    </a>
+    <p class="hero-note">Takes 2 minutes &nbsp;·&nbsp; No spam, ever</p>
+    <div class="scroll-hint">Scroll</div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Who We Are -->
+  <section class="section">
+    <span class="section-eyebrow">Who We Are</span>
+    <h2>A community built by capoeiristas, <em>for capoeiristas.</em></h2>
+    <p>Capoeira International exists because this art deserves more than scattered Facebook groups and word-of-mouth. We are practitioners, teachers, and students from across the globe who believe Capoeira's future depends on how well we listen to each other.</p>
+    <p>We are not affiliated with any single lineage or style. <strong>We belong to the whole of Capoeira</strong> — Angola, Regional, and everything in between. Our work is to understand where this community is, what it needs, and to create things that genuinely serve it.</p>
+
+    <div class="pillars">
+      <div class="pillar">
+        <span class="pillar-icon">🌍</span>
+        <span class="pillar-title">Global Reach</span>
+        <p class="pillar-text">From São Paulo to Stockholm, Cape Town to Seoul — Capoeira is everywhere and so are we.</p>
+      </div>
+      <div class="pillar">
+        <span class="pillar-icon">🤝</span>
+        <span class="pillar-title">No Agenda</span>
+        <p class="pillar-text">We are not selling you a course. We are listening first, and building second.</p>
+      </div>
+      <div class="pillar">
+        <span class="pillar-icon">🥋</span>
+        <span class="pillar-title">All Levels</span>
+        <p class="pillar-text">Whether you trained for a week or thirty years, your perspective belongs in this conversation.</p>
       </div>
     </div>
+  </section>
 
-    <!-- ── STEP 1 ── SMIQ open text -->
-    <div class="step" id="step-1">
-      <span class="eyebrow" id="smiq-eyebrow">Your biggest challenge</span>
-      <p class="smiq-label" id="smiq-question"></p>
-      <textarea id="smiq-answer" rows="5" minlength="10" placeholder=""></textarea>
-      <p class="char-hint">Please write at least 10 characters — the more detail, the better.</p>
-      <div class="btn-row">
-        <button class="btn btn-ghost" id="back-from-smiq">← Back</button>
-        <button class="btn btn-primary" id="next-from-smiq" disabled>Continue →</button>
-      </div>
-    </div>
+  <div class="divider"></div>
 
-    <!-- ── STEP 2 ── Teacher detail (teacher only) -->
-    <div class="step" id="step-2">
-      <span class="eyebrow">A little more about your teaching</span>
-      <h2>How do you teach?</h2>
-      <p class="subtitle">Both fields required to continue.</p>
+  <!-- Segments -->
+  <section class="segments-section">
+    <div class="segments-inner">
+      <span class="section-eyebrow">Who This Is For</span>
+      <h2>Wherever you are in your journey — <em>you belong here.</em></h2>
+      <p class="lead">This conversation is open to every person who has ever had Capoeira in their life. Pick the path that fits you most.</p>
 
-      <div class="detail-section">
-        <span class="detail-label">Teaching situation</span>
-        <div class="role-grid" id="role-grid">
-          <button class="choice-card" data-role="classes">
-            <span class="choice-name">I teach classes</span>
-            <span class="choice-sub">Affiliated with or employed by someone else's school</span>
-          </button>
-          <button class="choice-card" data-role="own-school">
-            <span class="choice-name">I teach &amp; run my own school or group</span>
-            <span class="choice-sub">I own or lead my own school or group</span>
-          </button>
-          <button class="choice-card" data-role="admin">
-            <span class="choice-name">I run a school but don't teach regularly</span>
-            <span class="choice-sub">Administrative / leadership role</span>
-          </button>
-          <button class="choice-card" data-role="online">
-            <span class="choice-name">I teach primarily online</span>
-            <span class="choice-sub">YouTube, courses, or digital platforms</span>
-          </button>
+      <div class="seg-list">
+        <div class="seg-item">
+          <span class="icon">🌱</span>
+          <span class="name">The Curious One</span>
+          <span class="desc">Exploring Capoeira for the first time</span>
+        </div>
+        <div class="seg-item">
+          <span class="icon">🎵</span>
+          <span class="name">The Student</span>
+          <span class="desc">Training consistently and growing</span>
+        </div>
+        <div class="seg-item">
+          <span class="icon">🌀</span>
+          <span class="name">The Practitioner</span>
+          <span class="desc">Years of training, deepening the art</span>
+        </div>
+        <div class="seg-item">
+          <span class="icon">🪘</span>
+          <span class="name">The Teacher</span>
+          <span class="desc">Instructors, mestres, and school leaders</span>
+        </div>
+        <div class="seg-item">
+          <span class="icon">🌙</span>
+          <span class="name">The One Who Left</span>
+          <span class="desc">Trained once and stepped away</span>
         </div>
       </div>
-
-      <div class="detail-section">
-        <span class="detail-label">Graduation level</span>
-        <div class="grad-grid" id="grad-grid">
-          <button class="choice-card" data-grad="monitor">
-            <span class="choice-name">Monitor / Instructor</span>
-          </button>
-          <button class="choice-card" data-grad="professor">
-            <span class="choice-name">Professor</span>
-          </button>
-          <button class="choice-card" data-grad="contra-mestre">
-            <span class="choice-name">Contra-Mestre</span>
-          </button>
-          <button class="choice-card" data-grad="mestre">
-            <span class="choice-name">Mestre</span>
-            <span class="choice-sub">Fully graduated master</span>
-          </button>
-          <button class="choice-card" data-grad="grao-mestre">
-            <span class="choice-name">Grão-Mestre</span>
-            <span class="choice-sub">Grand master</span>
-          </button>
-          <button class="choice-card" data-grad="ungraded">
-            <span class="choice-name">Not formally graded</span>
-            <span class="choice-sub">Self-taught or community teacher</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="btn-row">
-        <button class="btn btn-ghost" id="back-from-teacher">← Back</button>
-        <button class="btn btn-primary" id="next-from-teacher" disabled>Continue →</button>
-      </div>
     </div>
+  </section>
 
-    <!-- ── STEP 3 ── Email capture -->
-    <div class="step" id="step-3">
-      <span class="eyebrow">Almost there</span>
-      <h1>Last step — who are you?</h1>
-      <p class="subtitle">So we know whose voice this is.</p>
-      <hr class="rule">
+  <!-- Why section -->
+  <section class="why-section">
+    <span class="section-eyebrow" style="display:block; text-align:center; margin-bottom:20px;">Why We're Asking</span>
+    <h2>Your answer shapes what <em>comes next.</em></h2>
+    <p>This is not a survey for the sake of data. Every response is read personally. The patterns we find will directly inform what Capoeira International builds — the resources, the conversations, the events, the community.</p>
+    <p><strong>We ask one question.</strong> What is your single biggest challenge or frustration right now? That's it. No long forms, no trick questions.</p>
 
-      <div class="input-group">
-        <label class="field-label" for="name-input">First name</label>
-        <input type="text" id="name-input" placeholder="e.g. Maria" autocomplete="given-name">
-      </div>
-      <div class="input-group">
-        <label class="field-label" for="email-input">Email address</label>
-        <input type="email" id="email-input" placeholder="you@example.com" autocomplete="email">
-      </div>
+    <ul class="promise-list">
+      <li>Your answer is read by a human, not just processed by an algorithm</li>
+      <li>We will never sell or share your information</li>
+      <li>This takes under two minutes</li>
+      <li>Every voice — beginner to mestre — carries equal weight here</li>
+    </ul>
+  </section>
 
-      <div class="btn-row">
-        <button class="btn btn-ghost" id="back-from-email">← Back</button>
-        <button class="btn btn-primary" id="submit-btn" disabled>
-          <span class="btn-text">Submit →</span>
-          <span class="spinner"></span>
-        </button>
-      </div>
-      <div class="error-msg" id="submit-error"></div>
-    </div>
+  <div class="divider"></div>
 
-    <!-- ── SUCCESS ── -->
-    <div id="success-screen">
-      <div class="axe-heading" id="success-heading"></div>
-      <p class="success-msg" id="success-msg"></p>
-      <div class="segment-badge" id="success-badge"></div>
-    </div>
+  <!-- Final CTA -->
+  <section class="final-cta">
+    <h2>Ready to share<br><em>your story?</em></h2>
+    <p>Two minutes. One question. Your voice in the future of Capoeira.</p>
+    <a href="smiq.html" class="hero-cta">
+      Join the Conversation
+      <span class="arrow">→</span>
+    </a>
+  </section>
 
-  </div>
-</div>
+  <!-- Footer -->
+  <footer>
+    <div class="footer-logo">Capoeira International</div>
+    <div class="footer-note">Listening to the community &nbsp;·&nbsp; Built with care</div>
+  </footer>
 
-<script src="script.js"></script>
+</div><!-- /page -->
+
 </body>
 </html>
