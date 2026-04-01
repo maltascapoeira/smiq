@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capoeira — Tell Us Where You Are</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Setup Banner -->
+<div id="setup-banner">
+  <button id="dismiss-banner">✕ Dismiss</button>
+  <strong>⚙ Setup Required:</strong>
+  Edit the <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> in the script below.
+  Create a Supabase table named <code>smiq_responses</code> with columns:
+  <code>id</code> (int8, PK), <code>created_at</code> (timestamptz), <code>name</code>, <code>email</code>,
+  <code>segment</code>, <code>segment_label</code>, <code>smiq_answer</code>, <code>teaching_role</code>,
+  <code>graduation_level</code> (all text).
+</div>
+
+<div class="wrapper">
+  <div class="card" id="main-card">
+
+    <!-- Step dots -->
+    <div class="step-dots" id="step-dots">
+      <div class="dot" data-dot="0"></div>
+      <div class="dot" data-dot="1"></div>
+      <div class="dot" data-dot="2" id="teacher-dot"></div>
+      <div class="dot" data-dot="3"></div>
+    </div>
+
+    <!-- ── STEP 0 ── Segment picker -->
+    <div class="step" id="step-0">
+      <span class="eyebrow">Tell us where you are</span>
+      <h1>Which of these best describes you?</h1>
+      <p class="subtitle">We'll tailor everything to your journey.</p>
+
+      <div class="segment-grid" id="segment-grid">
+        <button class="segment-card" data-segment="curious" data-label="The Curious One">
+          <span class="seg-icon">🌱</span>
+          <span class="seg-name">The Curious One</span>
+          <span class="seg-desc">New or just exploring — haven't trained regularly yet</span>
+        </button>
+        <button class="segment-card" data-segment="student" data-label="The Student">
+          <span class="seg-icon">🎵</span>
+          <span class="seg-name">The Student</span>
+          <span class="seg-desc">Training consistently, learning the ropes of jogo and music</span>
+        </button>
+        <button class="segment-card" data-segment="practitioner" data-label="The Practitioner">
+          <span class="seg-icon">🌀</span>
+          <span class="seg-name">The Practitioner</span>
+          <span class="seg-desc">Years of training, playing rodas, deepening your art</span>
+        </button>
+        <button class="segment-card" data-segment="teacher" data-label="The Teacher">
+          <span class="seg-icon">🪘</span>
+          <span class="seg-name">The Teacher</span>
+          <span class="seg-desc">Mestre, instructor, or building your own group / school</span>
+        </button>
+        <button class="segment-card segment-card--lapsed" data-segment="lapsed" data-label="The One Who Left">
+          <span class="seg-icon">🌙</span>
+          <span class="seg-name">The One Who Left</span>
+          <span class="seg-desc">Trained before but stepped away — life, injury, or something else pulled you out</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── STEP 1 ── SMIQ open text -->
+    <div class="step" id="step-1">
+      <span class="eyebrow" id="smiq-eyebrow">Your biggest challenge</span>
+      <p class="smiq-label" id="smiq-question"></p>
+      <textarea id="smiq-answer" rows="5" minlength="10" placeholder=""></textarea>
+      <p class="char-hint">Please write at least 10 characters — the more detail, the better.</p>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="back-from-smiq">← Back</button>
+        <button class="btn btn-primary" id="next-from-smiq" disabled>Continue →</button>
+      </div>
+    </div>
+
+    <!-- ── STEP 2 ── Teacher detail (teacher only) -->
+    <div class="step" id="step-2">
+      <span class="eyebrow">A little more about your teaching</span>
+      <h2>How do you teach?</h2>
+      <p class="subtitle">Both fields required to continue.</p>
+
+      <div class="detail-section">
+        <span class="detail-label">Teaching situation</span>
+        <div class="role-grid" id="role-grid">
+          <button class="choice-card" data-role="classes">
+            <span class="choice-name">I teach classes</span>
+            <span class="choice-sub">Affiliated with or employed by someone else's school</span>
+          </button>
+          <button class="choice-card" data-role="own-school">
+            <span class="choice-name">I teach &amp; run my own school or group</span>
+            <span class="choice-sub">I own or lead my own school or group</span>
+          </button>
+          <button class="choice-card" data-role="admin">
+            <span class="choice-name">I run a school but don't teach regularly</span>
+            <span class="choice-sub">Administrative / leadership role</span>
+          </button>
+          <button class="choice-card" data-role="online">
+            <span class="choice-name">I teach primarily online</span>
+            <span class="choice-sub">YouTube, courses, or digital platforms</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <span class="detail-label">Graduation level</span>
+        <div class="grad-grid" id="grad-grid">
+          <button class="choice-card" data-grad="monitor">
+            <span class="choice-name">Monitor / Instructor</span>
+          </button>
+          <button class="choice-card" data-grad="professor">
+            <span class="choice-name">Professor</span>
+          </button>
+          <button class="choice-card" data-grad="contra-mestre">
+            <span class="choice-name">Contra-Mestre</span>
+          </button>
+          <button class="choice-card" data-grad="mestre">
+            <span class="choice-name">Mestre</span>
+            <span class="choice-sub">Fully graduated master</span>
+          </button>
+          <button class="choice-card" data-grad="grao-mestre">
+            <span class="choice-name">Grão-Mestre</span>
+            <span class="choice-sub">Grand master</span>
+          </button>
+          <button class="choice-card" data-grad="ungraded">
+            <span class="choice-name">Not formally graded</span>
+            <span class="choice-sub">Self-taught or community teacher</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="back-from-teacher">← Back</button>
+        <button class="btn btn-primary" id="next-from-teacher" disabled>Continue →</button>
+      </div>
+    </div>
+
+    <!-- ── STEP 3 ── Email capture -->
+    <div class="step" id="step-3">
+      <span class="eyebrow">Almost there</span>
+      <h1>Where should we send your resources?</h1>
+      <p class="subtitle">We'll only ever send you things worth reading.</p>
+      <hr class="rule">
+
+      <div class="input-group">
+        <label class="field-label" for="name-input">First name</label>
+        <input type="text" id="name-input" placeholder="e.g. Maria" autocomplete="given-name">
+      </div>
+      <div class="input-group">
+        <label class="field-label" for="email-input">Email address</label>
+        <input type="email" id="email-input" placeholder="you@example.com" autocomplete="email">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="back-from-email">← Back</button>
+        <button class="btn btn-primary" id="submit-btn" disabled>
+          <span class="btn-text">Send my resources →</span>
+          <span class="spinner"></span>
+        </button>
+      </div>
+      <div class="error-msg" id="submit-error"></div>
+    </div>
+
+    <!-- ── SUCCESS ── -->
+    <div id="success-screen">
+      <div class="axe-heading" id="success-heading"></div>
+      <p class="success-msg" id="success-msg">
+        Thank you for sharing. We're reading every response carefully — your insights help shape what we create next.
+        Check your inbox for tailored resources matched to your journey.
+      </p>
+      <div class="segment-badge" id="success-badge"></div>
+      <p class="email-confirm" id="success-email"></p>
+    </div>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
